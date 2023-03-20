@@ -18,8 +18,8 @@ public interface TopLevelExecutable extends CommandExecutor, TabCompleter, Execu
             return true;
         }
         try {
-            execute(sender, new Args(args));
-        } catch (CommandException e) {
+            execute(sender, Arrays.asList(args));
+        } catch (CommandExecutionException e) {
             sender.sendMessage(ChatColor.RED + e.getMessage());
         }
         return true;
@@ -29,7 +29,7 @@ public interface TopLevelExecutable extends CommandExecutor, TabCompleter, Execu
     default List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 0 || !(sender instanceof Player) || getPermission().notOwnedBy(sender))
             return Collections.emptyList();
-        return getTabCompletions((Player) sender, new Args(args));
+        return getTabCompletions((Player) sender, Arrays.asList(args));
     }
     
 }

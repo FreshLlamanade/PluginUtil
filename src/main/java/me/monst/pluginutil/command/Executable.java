@@ -31,9 +31,9 @@ public interface Executable {
         return "You do not have permission to do that.";
     }
     
-    void execute(CommandSender sender, Args args) throws CommandException;
+    void execute(CommandSender sender, List<String> args) throws CommandExecutionException;
     
-    default List<String> getTabCompletions(Player player, Args args) {
+    default List<String> getTabCompletions(Player player, List<String> args) {
         return Collections.emptyList();
     }
 

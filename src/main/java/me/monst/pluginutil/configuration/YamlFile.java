@@ -36,6 +36,7 @@ public class YamlFile {
     private void copyDefaultFile() {
         InputStream in = plugin.getResource(path.getFileName().toString());
         try {
+            Files.createDirectories(plugin.getDataFolder().toPath());
             if (in != null)
                 Files.copy(in, path);
             else

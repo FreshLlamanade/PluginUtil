@@ -8,6 +8,7 @@ import me.monst.pluginutil.configuration.validation.Bounds;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public interface Transformer<T> {
@@ -41,6 +42,10 @@ public interface Transformer<T> {
     
     default Transformer<Optional<T>> optional() {
         return new OptionalTransformer<>(this);
+    }
+    
+    default <R> Transformer<R> map(Function<T, R> mapper, Function<R, T> reverseMapper) {
+        return new MappingTransformer<>(this, mapper, reverseMapper);
     }
     
 }

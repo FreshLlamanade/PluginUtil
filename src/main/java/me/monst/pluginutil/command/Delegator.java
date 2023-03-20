@@ -18,9 +18,9 @@ public interface Delegator extends Executable {
     Map<String, Executable> getSubCommands();
     
     @Override
-    default void execute(CommandSender sender, Args args) throws CommandException {
+    default void execute(CommandSender sender, List<String> args) throws CommandExecutionException {
         Executable subCommand;
-        if (args.isEmpty() || (subCommand = getSubCommands().get(args.first())) == null) {
+        if (args.isEmpty() || (subCommand = getSubCommands().get(args.get(0))) == null) {
             getSubCommands().values().stream()
                     .filter(cmd -> cmd.getPermission().ownedBy(sender))
                     .map(this::displaySubCommand)
@@ -28,36 +28,36 @@ public interface Delegator extends Executable {
             return;
         }
         if (subCommand.isPlayerOnly() && !(sender instanceof Player)) {
-            throw new CommandException("Player command only.");
+            throw new CommandExecutionException("Player command only.");
         }
         if (subCommand.getPermission().notOwnedBy(sender)) {
-            throw new CommandException(subCommand.getNoPermissionMessage());
+            throw new CommandExecutionException(subCommand.getNoPermissionMessage());
         }
-        subCommand.execute(sender, args.descend());
+        subCommand.execute(sender, args.subList(1, args.size()));
     }
     
     @Override
-    default List<String> getTabCompletions(Player player, Args args) {
-        if (args.isEmpty() || getPermission().notOwnedBy(player)) {
+    default List<String> getTabCompletions(Player player, List<String> args) {
+        if (args.isEmpty()) {
             return Collections.emptyList();
         }
         if (args.size() == 1) {
             return getSubCommands().keySet().stream()
-                    .filter(name -> StringUtil.startsWithIgnoreCase(name, args.first()))
+                    .filter(name -> StringUtil.startsWithIgnoreCase(name, args.get(0)))
                     .collect(Collectors.toList());
         }
         
-        Executable subCommand = getSubCommands().get(args.first());
+        Executable subCommand = getSubCommands().get(args.get(0));
         if (subCommand == null) {
             return Collections.emptyList();
         }
-        return subCommand.getTabCompletions(player, args.descend());
+        return subCommand.getTabCompletions(player, args.subList(1, args.size()));
     }
     
     default String displaySubCommand(Executable subCommand) {
         return new ColorStringBuilder()
-                .green().bold(subCommand.getUsage())
-                .gold(" : ")
+                .green(subCommand.getUsage())
+                .gold(": ")
                 .darkGreen(subCommand.getDescription())
                 .toString();
     }

@@ -122,7 +122,7 @@ public class ConfigurationValue<T> extends ConfigurationNode {
      * @param args the arguments the player has typed so far
      * @return a list of tab-completions
      */
-    public List<String> getTabCompletions(Player player, String[] args) {
+    public List<String> getTabCompletions(Player player, List<String> args) {
         return Arrays.asList(transformer.format(get()), transformer.format(defaultValue));
     }
 
