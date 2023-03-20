@@ -25,7 +25,7 @@ public interface Transformer<T> {
     }
     
     default Object toYaml(T value) {
-        return value;
+        return String.valueOf(value);
     }
     
     default String format(T value) {
