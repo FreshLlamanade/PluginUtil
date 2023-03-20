@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
-public interface DebugLogger {
+public interface Debugger {
     
     void log(String message);
     
@@ -12,7 +12,7 @@ public interface DebugLogger {
     
     void close();
     
-    DebugLogger NO_OP = new DebugLogger() {
+    Debugger NO_OP = new Debugger() {
         @Override
         public void log(String message) {}
         
@@ -23,8 +23,8 @@ public interface DebugLogger {
         public void close() {}
     };
     
-    static DebugLogger printingTo(PrintWriter out) {
-        return new DebugLogger() {
+    static Debugger printingTo(PrintWriter out) {
+        return new Debugger() {
             @Override
             public void log(String message) {
                 out.printf("[%s] %s%n", LocalTime.now().truncatedTo(ChronoUnit.SECONDS).toString(), message);

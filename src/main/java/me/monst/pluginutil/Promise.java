@@ -1,4 +1,4 @@
-package me.monst.pluginutil.update;
+package me.monst.pluginutil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;

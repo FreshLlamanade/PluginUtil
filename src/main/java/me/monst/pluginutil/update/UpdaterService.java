@@ -1,5 +1,7 @@
 package me.monst.pluginutil.update;
 
+import me.monst.pluginutil.Promise;
+
 public interface UpdaterService {
     
     /**

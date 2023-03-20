@@ -1,21 +1,13 @@
 package me.monst.pluginutil.log;
 
+import java.util.logging.Logger;
+
 public interface Debuggable {
     
-    default DebugLogger getDebugLogger() {
-        return DebugLogger.NO_OP;
-    }
-
-    default void debug(String message) {
-        getDebugLogger().log(message);
-    }
+    PluginLogger log();
     
-    default void debug(String message, Object... args) {
-        getDebugLogger().log(String.format(message, args));
-    }
+    Logger getLogger();
     
-    default void debug(Throwable throwable) {
-        getDebugLogger().log(throwable);
-    }
+    Debugger getDebugger();
 
 }
