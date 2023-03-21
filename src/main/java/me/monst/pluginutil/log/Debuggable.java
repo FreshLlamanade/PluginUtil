@@ -7,7 +7,5 @@ public interface Debuggable {
     PluginLogger log();
     
     Logger getLogger();
-    
-    Debugger getDebugger();
 
 }

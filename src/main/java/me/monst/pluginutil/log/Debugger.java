@@ -6,18 +6,18 @@ import java.time.temporal.ChronoUnit;
 
 public interface Debugger {
     
-    void log(String message);
+    void debug(String message);
     
-    void log(Throwable throwable);
+    void debug(Throwable throwable);
     
     void close();
     
     Debugger NO_OP = new Debugger() {
         @Override
-        public void log(String message) {}
+        public void debug(String message) {}
         
         @Override
-        public void log(Throwable throwable) {}
+        public void debug(Throwable throwable) {}
         
         @Override
         public void close() {}
@@ -26,12 +26,12 @@ public interface Debugger {
     static Debugger printingTo(PrintWriter out) {
         return new Debugger() {
             @Override
-            public void log(String message) {
+            public void debug(String message) {
                 out.printf("[%s] %s%n", LocalTime.now().truncatedTo(ChronoUnit.SECONDS).toString(), message);
             }
             
             @Override
-            public void log(Throwable throwable) {
+            public void debug(Throwable throwable) {
                 throwable.printStackTrace(out);
                 out.flush();
             }

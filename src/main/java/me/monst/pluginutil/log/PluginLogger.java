@@ -2,6 +2,10 @@ package me.monst.pluginutil.log;
 
 public interface PluginLogger {
     
+    void setDebugger(Debugger debugger);
+    
+    Debugger getDebugger();
+    
     void debug(String message);
     
     void debug(String message, Object... args);
