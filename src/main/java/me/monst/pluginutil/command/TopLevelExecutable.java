@@ -19,6 +19,8 @@ public interface TopLevelExecutable extends CommandExecutor, TabCompleter, Execu
         }
         try {
             execute(sender, Arrays.asList(args));
+        } catch (NoPermissionException e) {
+            sender.sendMessage(ChatColor.DARK_RED + e.getMessage());
         } catch (CommandExecutionException e) {
             sender.sendMessage(ChatColor.RED + e.getMessage());
         }

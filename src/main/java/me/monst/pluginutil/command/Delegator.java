@@ -31,7 +31,7 @@ public interface Delegator extends Executable {
             throw new CommandExecutionException("Player command only.");
         }
         if (subCommand.getPermission().notOwnedBy(sender)) {
-            throw new CommandExecutionException(subCommand.getNoPermissionMessage());
+            throw new NoPermissionException(subCommand.getNoPermissionMessage());
         }
         subCommand.execute(sender, args.subList(1, args.size()));
     }
@@ -42,7 +42,9 @@ public interface Delegator extends Executable {
             return Collections.emptyList();
         }
         if (args.size() == 1) {
-            return getSubCommands().keySet().stream()
+            return getSubCommands().entrySet().stream()
+                    .filter(entry -> entry.getValue().getPermission().ownedBy(player))
+                    .map(Map.Entry::getKey)
                     .filter(name -> StringUtil.startsWithIgnoreCase(name, args.get(0)))
                     .collect(Collectors.toList());
         }
