@@ -44,10 +44,12 @@ public interface PermissionLimit extends Permission {
     
             @Override
             public Optional<Integer> getPermissionLimitInt(CommandSender sender) {
+                // Special case for unlimited, must be checked before the loop
+                // because it might be inherited as a child of a different permission
+                if (sender.hasPermission(base + "*"))
+                    return Optional.of(Integer.MAX_VALUE);
                 Optional<Integer> limit = Optional.empty();
                 for (String ending : getPermissionEndings(sender)) {
-                    if (ending.equals("*"))
-                        return Optional.of(Integer.MAX_VALUE);
                     try {
                         int newLimit = Integer.parseInt(ending);
                         if (newLimit < 0)
@@ -63,10 +65,12 @@ public interface PermissionLimit extends Permission {
     
             @Override
             public Optional<Long> getPermissionLimitLong(CommandSender sender) {
+                // Special case for unlimited, must be checked before the loop
+                // because it might be inherited as a child of a different permission
+                if (sender.hasPermission(base + "*"))
+                    return Optional.of(Long.MAX_VALUE);
                 Optional<Long> limit = Optional.empty();
                 for (String ending : getPermissionEndings(sender)) {
-                    if (ending.equals("*"))
-                        return Optional.of(Long.MAX_VALUE);
                     try {
                         long newLimit = Long.parseLong(ending);
                         if (newLimit < 0)
