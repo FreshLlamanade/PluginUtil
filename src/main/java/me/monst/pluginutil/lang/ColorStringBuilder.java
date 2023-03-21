@@ -138,6 +138,11 @@ public class ColorStringBuilder {
             builder.append(obj);
         return this;
     }
+    
+    public ColorStringBuilder newLine() {
+        builder.append("\n");
+        return this;
+    }
 
     public String toString() {
         return builder.toString();
