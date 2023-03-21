@@ -8,9 +8,8 @@ import me.monst.pluginutil.configuration.transform.Transformer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A configuration value stored in a yaml file.
@@ -23,6 +22,7 @@ public class ConfigurationValue<T> extends ConfigurationNode {
     private final T defaultValue;
     private T value;
     private final Transformer<T> transformer;
+    private final Set<T> history = new LinkedHashSet<>();
 
     /**
      * Creates a new configuration value at the specified path in the plugin's configuration file. Calling this
@@ -35,8 +35,14 @@ public class ConfigurationValue<T> extends ConfigurationNode {
     public ConfigurationValue(String key, T defaultValue, Transformer<T> transformer) {
         super(key);
         this.defaultValue = defaultValue;
-        this.value = defaultValue;
+        this.value = addToHistory(defaultValue);
         this.transformer = transformer;
+    }
+    
+    private T addToHistory(T value) {
+        history.remove(value); // Remove first to ensure that the most recent value is at the end
+        history.add(value);
+        return value;
     }
     
     /**
@@ -63,11 +69,11 @@ public class ConfigurationValue<T> extends ConfigurationNode {
     protected final void feed(Object object) {
         try {
             transformer.nullCheck(object);
-            this.value = transformer.convert(object);
+            this.value = addToHistory(transformer.convert(object));
         } catch (ValueOutOfBoundsException e) {
-            this.value = e.getReplacement();
+            this.value = addToHistory(e.getReplacement());
         } catch (MissingValueException | UnreadableValueException e) {
-            this.value = defaultValue;
+            this.value = addToHistory(defaultValue);
         }
     }
     
@@ -83,7 +89,7 @@ public class ConfigurationValue<T> extends ConfigurationNode {
     public final void feed(String input) throws ArgumentParseException {
         T value = transformer.parse(input);
         beforeSet();
-        this.value = value;
+        this.value = addToHistory(value);
         afterSet();
     }
     
@@ -123,7 +129,7 @@ public class ConfigurationValue<T> extends ConfigurationNode {
      * @return a list of tab-completions
      */
     public List<String> getTabCompletions(Player player, List<String> args) {
-        return Arrays.asList(transformer.format(get()), transformer.format(defaultValue));
+        return history.stream().map(transformer::format).collect(Collectors.toList());
     }
 
     /**
