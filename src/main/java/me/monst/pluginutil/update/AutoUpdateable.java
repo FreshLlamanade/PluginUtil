@@ -1,6 +1,8 @@
 package me.monst.pluginutil.update;
 
-public interface AutoUpdateable {
+import org.bukkit.plugin.Plugin;
+
+public interface AutoUpdateable extends Plugin {
 
     UpdaterService getUpdaterService();
 
