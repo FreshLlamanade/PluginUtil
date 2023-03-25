@@ -1,9 +1,6 @@
 package me.monst.pluginutil.configuration;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public abstract class ConfigurationBranch extends ConfigurationNode {
     
@@ -25,6 +22,30 @@ public abstract class ConfigurationBranch extends ConfigurationNode {
     
     public Map<String, ConfigurationNode> getChildren() {
         return children;
+    }
+    
+    /**
+     * Descend the configuration tree from this node to find a child node with the given path.
+     * The path is a list of keys that will be used to descend the tree. If the path is empty,
+     * this node will be returned. The first encountered leaf node will be returned and the remaining keys
+     * in the path will not be consumed from the iterator. If the path leads to a non-existent node,
+     * the last encountered node will be returned and the remaining keys in the path will not be consumed.
+     * and any remaining keys in the path will not be consumed from the iterator.
+     * @param path the path to descend
+     * @return the node at the end of the path, or null if the path leads to a non-existent node
+     */
+    public ConfigurationNode deepSearch(ListIterator<String> path) {
+        if (!path.hasNext()) {
+            return this;
+        }
+        ConfigurationNode child = getChild(path.next());
+        if (child == null) {
+            path.previous(); // put the key back
+            return this;
+        }
+        if (child instanceof ConfigurationBranch)
+            return ((ConfigurationBranch) child).deepSearch(path);
+        return child;
     }
     
     @Override
