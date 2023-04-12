@@ -5,7 +5,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public interface Database extends ConnectionSupplier {
+public interface Database extends ConnectionProvider {
     
     void reload();
     
