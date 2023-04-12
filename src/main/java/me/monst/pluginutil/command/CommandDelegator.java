@@ -7,7 +7,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
