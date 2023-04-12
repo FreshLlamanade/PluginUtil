@@ -62,7 +62,7 @@ public interface Command {
      * @param args The in-progress arguments of the command.
      * @return The tab completions for the command's arguments.
      */
-    default List<String> getTabCompletions(Player player, Arguments args) {
+    default Iterable<?> getTabCompletions(Player player, Arguments args) {
         return Collections.emptyList();
     }
     
@@ -78,8 +78,12 @@ public interface Command {
         throw new CommandExecutionException("Player command only.");
     }
     
+    static CommandExecutionException exception(String message) {
+        return new CommandExecutionException(message);
+    }
+    
     static void fail(String message) throws CommandExecutionException {
-        throw new CommandExecutionException(message);
+        throw exception(message);
     }
 
 }

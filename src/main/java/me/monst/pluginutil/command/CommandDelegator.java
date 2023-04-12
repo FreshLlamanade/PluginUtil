@@ -34,7 +34,7 @@ public interface CommandDelegator extends Command {
     }
     
     @Override
-    default List<String> getTabCompletions(Player player, Arguments args) {
+    default Iterable<?> getTabCompletions(Player player, Arguments args) {
         if (args.isEmpty())
             return Collections.emptyList();
         if (args.size() == 1) {

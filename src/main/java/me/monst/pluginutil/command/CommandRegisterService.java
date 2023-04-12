@@ -13,7 +13,9 @@ import org.bukkit.plugin.Plugin;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class CommandRegisterService {
     
@@ -84,7 +86,13 @@ public class CommandRegisterService {
         return (sender, cmd, alias, args) -> {
             if (args.length == 0 || !(sender instanceof Player) || command.getPermission().notOwnedBy(sender))
                 return Collections.emptyList();
-            return command.getTabCompletions((Player) sender, new ArgumentsImpl(args));
+            Iterable<?> iterable = command.getTabCompletions((Player) sender, new ArgumentsImpl(args));
+            if (iterable == null)
+                return Collections.emptyList();
+            List<String> tabCompletions = new ArrayList<>();
+            for (Object object : iterable)
+                tabCompletions.add(String.valueOf(object));
+            return tabCompletions;
         };
     }
     
