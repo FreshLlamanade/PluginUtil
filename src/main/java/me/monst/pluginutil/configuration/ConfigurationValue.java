@@ -1,5 +1,6 @@
 package me.monst.pluginutil.configuration;
 
+import me.monst.pluginutil.command.Arguments;
 import me.monst.pluginutil.configuration.exception.ArgumentParseException;
 import me.monst.pluginutil.configuration.exception.MissingValueException;
 import me.monst.pluginutil.configuration.exception.UnreadableValueException;
@@ -128,7 +129,7 @@ public class ConfigurationValue<T> extends ConfigurationNode {
      * @param args the arguments the player has typed so far
      * @return a list of tab-completions
      */
-    public List<String> getTabCompletions(Player player, List<String> args) {
+    public List<String> getTabCompletions(Player player, Arguments args) {
         return history.stream().map(transformer::format).collect(Collectors.toList());
     }
 

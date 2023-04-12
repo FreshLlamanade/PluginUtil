@@ -9,23 +9,23 @@ import java.util.function.Function;
 public class MappingTransformer<T, R> implements Transformer<R> {
 
     private final Transformer<T> transformer;
-    private final Function<T, R> mapper;
+    private final Function<T, R> forwardMapper;
     private final Function<R, T> reverseMapper;
     
-    public MappingTransformer(Transformer<T> transformer, Function<T, R> mapper, Function<R, T> reverseMapper) {
+    public MappingTransformer(Transformer<T> transformer, Function<T, R> forwardMapper, Function<R, T> reverseMapper) {
         this.transformer = transformer;
-        this.mapper = mapper;
+        this.forwardMapper = forwardMapper;
         this.reverseMapper = reverseMapper;
     }
     
     @Override
     public R parse(String input) throws ArgumentParseException {
-        return mapper.apply(transformer.parse(input));
+        return forwardMapper.apply(transformer.parse(input));
     }
     
     @Override
     public R convert(Object object) throws ValueOutOfBoundsException, UnreadableValueException {
-        return mapper.apply(transformer.convert(object));
+        return forwardMapper.apply(transformer.convert(object));
     }
     
     @Override

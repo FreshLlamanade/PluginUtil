@@ -28,7 +28,7 @@ public class BoundedTransformer<T> implements Transformer<T> {
         try {
             value = transformer.convert(object);
         } catch (ValueOutOfBoundsException e) {
-            bounds.validate(e.getReplacement()); // Might throw a new exception
+            bounds.validate(e.getReplacement()); // Might throw a ValueOutOfBoundsException with an even better replacement
             throw e; // Otherwise, rethrow the original exception
         }
         bounds.validate(value);

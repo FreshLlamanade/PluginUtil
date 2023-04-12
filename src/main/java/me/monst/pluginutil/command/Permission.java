@@ -7,20 +7,14 @@ public interface Permission {
     
     Permission NONE = sender -> true;
     
-    Permission OP = CommandSender::isOp;
-
-    boolean ownedBy(CommandSender sender);
-    
-    default boolean notOwnedBy(CommandSender sender) {
-        return !ownedBy(sender);
-    }
-    
     static Permission of(String permission) {
         return sender -> sender.hasPermission(permission);
     }
     
-    static Permission of(String permission, boolean op) {
-        return sender -> sender.hasPermission(permission) && op == sender.isOp();
+    boolean ownedBy(CommandSender sender);
+    
+    default boolean notOwnedBy(CommandSender sender) {
+        return !ownedBy(sender);
     }
     
     default Permission and(Permission other) {
@@ -29,6 +23,10 @@ public interface Permission {
     
     default Permission or(Permission other) {
         return sender -> ownedBy(sender) || other.ownedBy(sender);
+    }
+    
+    default Permission negate() {
+        return sender -> !ownedBy(sender);
     }
 
 }

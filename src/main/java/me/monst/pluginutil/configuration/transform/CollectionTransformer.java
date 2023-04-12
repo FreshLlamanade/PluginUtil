@@ -37,25 +37,25 @@ public class CollectionTransformer<T, C extends Collection<T>> implements Transf
             try {
                 T value = transformer.convert(element);
                 if (collection.add(value))
-                    continue;
+                    continue; // Value was added successfully, continue to next element
             } catch (ValueOutOfBoundsException e) {
                 collection.add(e.getReplacement());
             } catch (UnreadableValueException ignored) {}
-            problemFound = true;
+            problemFound = true; // If we get here, something went wrong
         }
-        if (problemFound)
+        if (problemFound) // If anything went wrong, throw an exception that the value could not exactly be converted
             throw new ValueOutOfBoundsException(collection);
         return collection;
     }
     
     @Override
-    public Object toYaml(C value) {
-        return value.stream().map(transformer::toYaml).collect(Collectors.toList());
+    public Object toYaml(C collection) {
+        return collection.stream().map(transformer::toYaml).collect(Collectors.toList()); // Store as a list in YAML
     }
     
     @Override
-    public String format(C value) {
-        return value.stream().map(transformer::format).collect(Collectors.joining(", ")); // do not include brackets
+    public String format(C collection) {
+        return collection.stream().map(transformer::format).collect(Collectors.joining(", "));
     }
 
 }
