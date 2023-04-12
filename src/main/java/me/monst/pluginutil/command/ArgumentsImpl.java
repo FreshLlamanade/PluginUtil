@@ -74,6 +74,16 @@ public class ArgumentsImpl implements Arguments {
     }
     
     @Override
+    public String join(CharSequence delimiter) {
+        return String.join(delimiter, this);
+    }
+    
+    @Override
+    public String join(CharSequence delimiter, CharSequence prefix, CharSequence suffix) {
+        return prefix + join(delimiter) + suffix;
+    }
+    
+    @Override
     public Iterator<String> iterator() {
         return new Iterator<String>() {
             private int index = startIndex;

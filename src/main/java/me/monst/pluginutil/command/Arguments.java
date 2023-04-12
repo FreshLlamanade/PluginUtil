@@ -127,4 +127,8 @@ public interface Arguments extends Iterable<String> {
      */
     Stream<String> stream();
     
+    String join(CharSequence delimiter);
+    
+    String join(CharSequence delimiter, CharSequence prefix, CharSequence suffix);
+    
 }
