@@ -91,7 +91,13 @@ public class ConfigurationValue<T> extends ConfigurationNode {
      * @throws ArgumentParseException if the input could not be parsed
      */
     public final void feed(String input) throws ArgumentParseException {
-        T value = transformer.parse(input);
+        T value;
+        try {
+            transformer.nullCheck(input);
+            value = transformer.parse(input);
+        } catch (MissingValueException e) {
+            value = addToHistory(defaultValue);
+        }
         beforeSet();
         this.value = addToHistory(value);
         afterSet();
