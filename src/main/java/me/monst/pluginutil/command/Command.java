@@ -77,10 +77,21 @@ public interface Command {
         throw new CommandExecutionException("Player command only.");
     }
     
+    /**
+     * Shorthand for creating a new CommandExecutionException with the given message.
+     * @param message The message.
+     * @return The CommandExecutionException.
+     */
     static CommandExecutionException exception(String message) {
         return new CommandExecutionException(message);
     }
     
+    /**
+     * Throws a CommandExecutionException with the given message.
+     * This method is provided as a shorthand for halting command execution when an error occurs.
+     * @param message The message.
+     * @throws CommandExecutionException Always.
+     */
     static void fail(String message) throws CommandExecutionException {
         throw exception(message);
     }
