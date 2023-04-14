@@ -82,6 +82,7 @@ public interface Command {
      * @param message The message.
      * @return The CommandExecutionException.
      */
+    @Deprecated
     static CommandExecutionException exception(String message) {
         return new CommandExecutionException(message);
     }
@@ -89,10 +90,15 @@ public interface Command {
     /**
      * Throws a CommandExecutionException with the given message.
      * This method is provided as a shorthand for halting command execution when an error occurs.
+     * Occasionally, this method might be called at the end of a non-void method.
+     * The compiler will complain in these cases that the method does not return a value, despite the fact that this
+     * method always throws an exception.
+     * For this reason, this method also states that it returns a CommandExecutionException, allowing it to be prefaced
+     * with "throw" to satisfy the compiler.
      * @param message The message.
      * @throws CommandExecutionException Always.
      */
-    static void fail(String message) throws CommandExecutionException {
+    static CommandExecutionException fail(String message) throws CommandExecutionException {
         throw exception(message);
     }
 
