@@ -9,10 +9,7 @@ import me.monst.pluginutil.configuration.transform.Transformer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -39,14 +36,11 @@ public class ConfigurationValue<T> extends ConfigurationNode {
     public ConfigurationValue(String key, T defaultValue, Transformer<T> transformer) {
         super(key);
         this.defaultValue = defaultValue;
-        this.value = addToHistory(defaultValue);
+        this.value = defaultValue;
         this.transformer = transformer;
-    }
-    
-    private T addToHistory(T value) {
-        history.remove(value); // Remove first to ensure that the most recent value is at the end
-        history.add(value);
-        return value;
+        // Add default value as first element in history, even though it is not a change
+        // This ensures that the value always has something to tab-complete with
+        history.add(defaultValue);
     }
     
     /**
@@ -58,26 +52,27 @@ public class ConfigurationValue<T> extends ConfigurationNode {
     }
     
     /**
-     * Gets the default value of this configuration value as defined in the constructor.
-     * @return the default value of this configuration value
+     * Sets the value of this configuration value, adding the old value to the history.
+     * The new value is removed from this history if it is already present.
+     * @param newValue the new value
      */
-    public final T getDefaultValue() {
-        return defaultValue;
-    }
-    
-    public final Transformer<T> getTransformer() {
-        return transformer;
+    private void set(T newValue) {
+        if (Objects.equals(value, newValue))
+            return;
+        history.add(value);
+        history.remove(newValue);
+        value = newValue;
     }
     
     @Override
     protected final void feed(Object object) {
         try {
             transformer.nullCheck(object);
-            this.value = addToHistory(transformer.convert(object));
+            set(transformer.convert(object));
         } catch (ValueOutOfBoundsException e) {
-            this.value = addToHistory(e.getReplacement());
+            set(e.getReplacement());
         } catch (MissingValueException | UnreadableValueException e) {
-            this.value = addToHistory(defaultValue);
+            set(defaultValue);
         }
     }
     
@@ -91,15 +86,15 @@ public class ConfigurationValue<T> extends ConfigurationNode {
      * @throws ArgumentParseException if the input could not be parsed
      */
     public final void feed(String input) throws ArgumentParseException {
-        T value;
+        T newValue;
         try {
             transformer.nullCheck(input);
-            value = transformer.parse(input);
+            newValue = transformer.parse(input);
         } catch (MissingValueException e) {
-            value = addToHistory(defaultValue);
+            newValue = defaultValue;
         }
         beforeSet();
-        this.value = addToHistory(value);
+        set(newValue);
         afterSet();
     }
     
@@ -141,7 +136,23 @@ public class ConfigurationValue<T> extends ConfigurationNode {
     public List<String> getTabCompletions(Player player, Arguments args) {
         return history.stream().map(transformer::format).collect(Collectors.toList());
     }
-
+    
+    /**
+     * Gets the default value of this configuration value as defined in the constructor.
+     * @return the default value of this configuration value
+     */
+    public final T getDefaultValue() {
+        return defaultValue;
+    }
+    
+    public final Transformer<T> getTransformer() {
+        return transformer;
+    }
+    
+    public Set<T> getHistory() {
+        return history;
+    }
+    
     /**
      * @return the formatted current state of this configuration value
      */
