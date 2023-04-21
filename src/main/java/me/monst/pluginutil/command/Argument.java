@@ -139,48 +139,12 @@ public class Argument<T> {
     }
     
     /**
-     * If a value is present, apply the provided mapping function to it, and if the result is non-null, return an argument
-     * describing the result. Otherwise, return an empty argument.
-     * @param mapper a mapping function to apply to the value, if present.
-     * @return an argument describing the result of applying a mapping function to the value of this argument, if a value
-     * is present, otherwise an empty argument.
-     * @param <U> The type of the result of the mapping function.
-     */
-    public <U> Argument<U> map(Function<T, U> mapper) {
-        if (value == null)
-            return empty();
-        return Argument.of(mapper.apply(value));
-    }
-    
-    /**
-     * If a value is present, apply the provided {@code Optional}-bearing
-     * mapping function to it, return that result, otherwise return an empty
-     * {@code Argument}.  This method is similar to {@link #map(Function)},
-     * but the provided mapper is one whose result is already an {@code Optional},
-     * and if invoked, {@code flatMap} will unwrap that {@code Optional} into
-     * a value.
-     *
-     * @param <U> The type parameter to the {@code Argument} returned by
-     * @param mapper a mapping function to apply to the value, if present
-     * @return the result of applying an {@code Optional}-bearing mapping
-     * function to the value of this {@code Argument}, if a value is present,
-     * otherwise an empty {@code Argument}
-     * @throws NullPointerException if the mapping function is null or returns
-     * a null result
-     */
-    public <U> Argument<U> flatMap(Function<T, Optional<U>> mapper) {
-        if (value == null)
-            return empty();
-        return mapper.apply(value).map(Argument::of).orElse(empty());
-    }
-    
-    /**
      * A function that can throw a CommandExecutionException.
      * @param <T> The type of the argument.
      * @param <R> The type of the result.
      * @param <X> The type of the exception.
      */
-    public interface ThrowingFunction<T, R, X extends CommandExecutionException> {
+    public interface ThrowingFunction<T, R, X extends Exception> {
         R apply(T t) throws X;
     }
     
@@ -194,7 +158,7 @@ public class Argument<T> {
      * @param <X> The type of the exception.
      * @throws X If the mapper throws an exception.
      */
-    public <U, X extends CommandExecutionException> Argument<U> tryMap(
+    public <U, X extends Exception> Argument<U> map(
             ThrowingFunction<T, U, ? extends X> mapper)
             throws X {
         if (value == null)
@@ -205,7 +169,7 @@ public class Argument<T> {
     /**
      * If a value is present, apply the provided {@code Optional}-bearing
      * mapping function to it, return that result, otherwise return an empty
-     * {@code Argument}.  This method is similar to {@link #tryMap(ThrowingFunction)},
+     * {@code Argument}. This method is similar to {@link #map(ThrowingFunction)},
      * but the provided mapper is one whose result is already an {@code Optional},
      * and if invoked, {@code flatMap} will unwrap that {@code Optional} into
      * a value.
@@ -220,7 +184,7 @@ public class Argument<T> {
      * @param <X> The type of the exception.
      * @throws X If the mapper throws an exception.
      */
-    public <U, X extends CommandExecutionException> Argument<U> tryFlatMap(
+    public <U, X extends Exception> Argument<U> flatMap(
             ThrowingFunction<T, Optional<U>, ? extends X> mapper)
             throws X {
         if (value == null)
