@@ -134,6 +134,8 @@ public class ConfigurationValue<T> extends ConfigurationNode {
      * @return a list of tab-completions
      */
     public List<String> getTabCompletions(Player player, Arguments args) {
+        if (args.size() > 1)
+            return Collections.emptyList();
         return history.stream().map(transformer::format).collect(Collectors.toList());
     }
     
