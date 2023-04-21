@@ -32,17 +32,14 @@ public abstract class ConfigurationBranch extends ConfigurationNode {
      * the last encountered node will be returned and the remaining keys in the path will not be consumed.
      * and any remaining keys in the path will not be consumed from the iterator.
      * @param path the path to descend
-     * @return the node at the end of the path, or null if the path leads to a non-existent node
+     * @return the deepest node that was found for the given path
      */
     public ConfigurationNode deepSearch(ListIterator<String> path) {
-        if (!path.hasNext()) {
+        if (!path.hasNext())
             return this;
-        }
         ConfigurationNode child = getChild(path.next());
-        if (child == null) {
-            path.previous(); // put the key back
+        if (child == null)
             return this;
-        }
         if (child instanceof ConfigurationBranch)
             return ((ConfigurationBranch) child).deepSearch(path);
         return child;
