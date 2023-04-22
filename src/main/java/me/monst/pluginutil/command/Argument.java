@@ -95,11 +95,39 @@ public class Argument<T> {
     }
     
     /**
+     * If a value is present, and the value is not blank, invoke the specified {@link Consumer} with the value,
+     * otherwise do nothing.
+     * A value is blank if its string representation is empty or consists solely of whitespace.
+     * Typically used before any mappings have been applied to the original String value, as the string representation
+     * of a mapped type may produce unexpected results.
+     * @param consumer block to be executed if a value is present and is not blank.
+    * @throws NullPointerException If value is present and is not blank and {@code consumer} is null.
+     */
+    public void ifNotBlank(Consumer<T> consumer) {
+        if (value != null && !value.toString().trim().isEmpty())
+            consumer.accept(value);
+    }
+    
+    /**
      * If a value is not present, invoke the specified {@link Runnable}, otherwise do nothing.
      * @param runnable block to be executed if a value is not present.
+     * @throws NullPointerException If value is not present and {@code runnable} is null.
      */
     public void ifAbsent(Runnable runnable) {
         if (value == null)
+            runnable.run();
+    }
+    
+    /**
+     * If a value is not present, or the value is blank, invoke the specified {@link Runnable}, otherwise do nothing.
+     * A value is blank if its string representation is empty or consists solely of whitespace.
+     * Typically used before any mappings have been applied to the original String value, as the string representation
+     * of a mapped type may produce unexpected results.
+     * @param runnable block to be executed if a value is not present or is blank.
+     * @throws NullPointerException If value is not present or is blank and {@code runnable} is null.
+     */
+    public void ifBlank(Runnable runnable) {
+        if (value == null || value.toString().trim().isEmpty())
             runnable.run();
     }
     
