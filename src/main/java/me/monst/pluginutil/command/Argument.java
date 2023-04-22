@@ -85,13 +85,22 @@ public class Argument<T> {
     }
     
     /**
-     * If a value is present, invoke the specified consumer with the value, otherwise do nothing.
+     * If a value is present, invoke the specified {@link Consumer} with the value, otherwise do nothing.
      * @param consumer block to be executed if a value is present.
      * @throws NullPointerException If value is present and {@code consumer} is null.
      */
     public void ifPresent(Consumer<T> consumer) {
         if (value != null)
             consumer.accept(value);
+    }
+    
+    /**
+     * If a value is not present, invoke the specified {@link Runnable}, otherwise do nothing.
+     * @param runnable block to be executed if a value is not present.
+     */
+    public void ifAbsent(Runnable runnable) {
+        if (value == null)
+            runnable.run();
     }
     
     /**
