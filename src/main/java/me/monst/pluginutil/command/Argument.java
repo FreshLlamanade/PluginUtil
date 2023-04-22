@@ -181,7 +181,7 @@ public class Argument<T> {
      * @param <R> The type of the result.
      * @param <X> The type of the exception.
      */
-    public interface ThrowingFunction<T, R, X extends Exception> {
+    public interface Mapper<T, R, X extends Exception> {
         R apply(T t) throws X;
     }
     
@@ -196,7 +196,7 @@ public class Argument<T> {
      * @throws X If the mapper throws an exception.
      */
     public <U, X extends Exception> Argument<U> map(
-            ThrowingFunction<T, U, ? extends X> mapper)
+            Mapper<T, U, ? extends X> mapper)
             throws X {
         if (value == null)
             return empty();
@@ -206,7 +206,7 @@ public class Argument<T> {
     /**
      * If a value is present, apply the provided {@code Optional}-bearing
      * mapping function to it, return that result, otherwise return an empty
-     * {@code Argument}. This method is similar to {@link #map(ThrowingFunction)},
+     * {@code Argument}. This method is similar to {@link #map(Mapper)},
      * but the provided mapper is one whose result is already an {@code Optional},
      * and if invoked, {@code flatMap} will unwrap that {@code Optional} into
      * a value.
@@ -222,7 +222,7 @@ public class Argument<T> {
      * @throws X If the mapper throws an exception.
      */
     public <U, X extends Exception> Argument<U> flatMap(
-            ThrowingFunction<T, Optional<U>, ? extends X> mapper)
+            Mapper<T, Optional<U>, ? extends X> mapper)
             throws X {
         if (value == null)
             return empty();
