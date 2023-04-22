@@ -176,7 +176,7 @@ public class Argument<T> {
     }
     
     /**
-     * A function that can throw a CommandExecutionException.
+     * A function that can throw an exception.
      * @param <T> The type of the argument.
      * @param <R> The type of the result.
      * @param <X> The type of the exception.
@@ -239,12 +239,21 @@ public class Argument<T> {
     }
     
     /**
+     * A supplier that can throw an exception.
+     * @param <T> The type of the result.
+     * @param <X> The type of the exception.
+     */
+    public interface ThrowingSupplier<T, X extends Exception> {
+        T get() throws X;
+    }
+    
+    /**
      * Return the value if present, otherwise invoke {@code other} and return the result of that invocation.
      * @param other a {@code Supplier} whose result is returned if no value is present.
      * @return the value if present otherwise the result of {@code other.get()}
      * @throws NullPointerException if value is not present and {@code other} is null.
      */
-    public T orElseGet(Supplier<T> other) {
+    public <X extends Exception> T orElseGet(ThrowingSupplier<T, X> other) throws X {
         return value != null ? value : other.get();
     }
     
@@ -256,7 +265,7 @@ public class Argument<T> {
      * @throws X if there is no value present.
      * @throws NullPointerException if no value is present and {@code supplier} is null.
      */
-    public <X extends CommandExecutionException> T orElseThrow(Supplier<? extends X> supplier) throws X {
+    public <X extends Exception> T orElseThrow(Supplier<? extends X> supplier) throws X {
         if (value != null)
             return value;
         throw supplier.get();

@@ -6,7 +6,7 @@
 
     <groupId>me.monst</groupId>
     <artifactId>plugin-util</artifactId>
-    <version>1.4.8</version>
+    <version>1.4.9</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
