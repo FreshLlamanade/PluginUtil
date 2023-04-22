@@ -11,18 +11,33 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/**
+ * Represents a YAML file.
+ * This will automatically copy over the plugin resource of the same name, if it exists, to the target path.
+ * The file can be loaded and saved using SnakeYAML.
+ */
 public class YamlFile {
     
     private final Plugin plugin;
     private final Path path;
     private final Yaml yaml;
     
+    /**
+     * Creates a new YAML file at the given path. If the path does not end with {@code .yml}, it will be appended.
+     * @param plugin the plugin
+     * @param path the path
+     */
     public YamlFile(Plugin plugin, Path path) {
         this.plugin = plugin;
         this.path = path.toString().endsWith(".yml") ? path : path.resolveSibling(path.getFileName() + ".yml");
         this.yaml = createYaml();
     }
     
+    /**
+     * Creates a new YAML file with the given filename in the plugin data folder.
+     * @param plugin the plugin
+     * @param filename the filename
+     */
     public YamlFile(Plugin plugin, String filename) {
         this(plugin, plugin.getDataFolder().toPath().resolve(filename));
     }
@@ -33,6 +48,10 @@ public class YamlFile {
         return new Yaml(options);
     }
     
+    /**
+     * Copies the default file from the plugin resources to the target path, if the target file does not exist yet.
+     * If the default file does not exist in the plugin resources, an empty file is created instead.
+     */
     private void copyDefaultFile() {
         InputStream in = plugin.getResource(path.getFileName().toString());
         try {
@@ -46,6 +65,10 @@ public class YamlFile {
         }
     }
     
+    /**
+     * Loads the file using SnakeYAML.
+     * @return the loaded object, or {@code null} if the file could not be loaded
+     */
     public Object load() {
         if (!Files.exists(path))
             copyDefaultFile();
@@ -57,6 +80,10 @@ public class YamlFile {
         return null;
     }
     
+    /**
+     * Saves the given object to the file using SnakeYAML.
+     * @param object the object to save
+     */
     public void save(Object object) {
         try (Writer out = Files.newBufferedWriter(path)) {
             Files.createDirectories(path.getParent());

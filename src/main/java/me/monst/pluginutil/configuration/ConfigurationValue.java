@@ -7,15 +7,16 @@ import me.monst.pluginutil.configuration.exception.UnreadableValueException;
 import me.monst.pluginutil.configuration.exception.ValueOutOfBoundsException;
 import me.monst.pluginutil.configuration.transform.Transformer;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * A configuration value stored in a yaml file.
- * Every configuration value has a default value, which is used when no other value is specified.
- * The value can be changed at runtime by calling {@link #feed(Object)}.
+ * A configuration value, which can be changed at runtime.
+ * The configuration value has a name {@code key}, which is given by its parent branch and unique among its siblings.
+ * The configuration value also has a value of type {@code T}, which can be changed at runtime, and a default value to
+ * fall back on if necessary.
+ * The configuration value can be converted to and from a YAML object using a {@link Transformer}.
  * @param <T> the type of the value
  */
 public class ConfigurationValue<T> extends ConfigurationNode {
@@ -24,14 +25,12 @@ public class ConfigurationValue<T> extends ConfigurationNode {
     private T value;
     private final Transformer<T> transformer;
     private final Set<T> history = new LinkedHashSet<>();
-
+    
     /**
-     * Creates a new configuration value at the specified path in the plugin's configuration file. Calling this
-     * constructor will immediately load the value from the file, creating it if it doesn't exist.
-     *
-     * @param key          the relative path of this value
-     * @param defaultValue the default value of this configuration value
-     * @param transformer  the transformer used for converting the data to and from the desired type
+     * Creates a new configuration value with the given key and default value.
+     * @param key the key of the value
+     * @param defaultValue the default value
+     * @param transformer the transformer used to convert the file data to and from the desired type
      */
     public ConfigurationValue(String key, T defaultValue, Transformer<T> transformer) {
         super(key);
@@ -64,6 +63,12 @@ public class ConfigurationValue<T> extends ConfigurationNode {
         value = newValue;
     }
     
+    /**
+     * Feeds an arbitrary object to this configuration value. The object will be converted to the
+     * desired type using the transformer, and the value will be set to the validated result.
+     * If the object is null or the transformer throws an exception, the value will be set to the default value.
+     * @param object the object to feed the node
+     */
     @Override
     protected final void feed(Object object) {
         try {
@@ -78,10 +83,6 @@ public class ConfigurationValue<T> extends ConfigurationNode {
     
     /**
      * Parses a user-entered string to a new value, and sets this configuration value.
-     * <p><b>Note:</b></p> unlike other methods, this method automatically calls {@link Plugin#reloadConfig()} before and
-     * {@link Plugin#saveConfig()} after performing the set operation, under the assumption that
-     * parsing user input will not happen inside a loop.
-     * Changes will be reflected in the {@code config.yml} file immediately.
      * @param input user input to be parsed, null if the value should be reset
      * @throws ArgumentParseException if the input could not be parsed
      */
@@ -147,10 +148,18 @@ public class ConfigurationValue<T> extends ConfigurationNode {
         return defaultValue;
     }
     
+    /**
+     * Gets the transformer used for converting the data to and from the desired type.
+     * @return this configuration value's transformer
+     */
     public final Transformer<T> getTransformer() {
         return transformer;
     }
     
+    /**
+     * Gets the history of this configuration value.
+     * @return the history of this configuration value
+     */
     public Set<T> getHistory() {
         return history;
     }

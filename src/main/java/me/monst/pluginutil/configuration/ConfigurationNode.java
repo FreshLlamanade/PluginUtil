@@ -1,5 +1,10 @@
 package me.monst.pluginutil.configuration;
 
+/**
+ * A node in a configuration tree. This node can be fed an arbitrary object and will attempt to make sense of
+ * it and store it in a way that makes sense for the node.
+ * Every node has a key which is used to identify it among its siblings.
+ */
 public abstract class ConfigurationNode {
     
     private final String key;
@@ -20,6 +25,10 @@ public abstract class ConfigurationNode {
      */
     protected abstract void feed(Object object);
     
+    /**
+     * Gets the value of this node as a YAML object.
+     * @return the value of this node as a YAML object
+     */
     protected abstract Object getAsYaml();
 
 }
