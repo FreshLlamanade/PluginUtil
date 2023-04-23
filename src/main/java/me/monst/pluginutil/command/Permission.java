@@ -17,6 +17,28 @@ public interface Permission {
         return !ownedBy(sender);
     }
     
+    static Permission any(Permission... permissions) {
+        return sender -> {
+            for (Permission permission : permissions) {
+                if (permission.ownedBy(sender)) {
+                    return true;
+                }
+            }
+            return false;
+        };
+    }
+    
+    static Permission all(Permission... permissions) {
+        return sender -> {
+            for (Permission permission : permissions) {
+                if (permission.notOwnedBy(sender)) {
+                    return false;
+                }
+            }
+            return true;
+        };
+    }
+    
     default Permission and(Permission other) {
         return sender -> ownedBy(sender) && other.ownedBy(sender);
     }
