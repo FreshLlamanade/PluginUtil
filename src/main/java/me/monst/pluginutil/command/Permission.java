@@ -40,10 +40,14 @@ public interface Permission {
     }
     
     default Permission and(Permission other) {
+        if (this == NONE) return other;
+        if (other == NONE) return this;
         return sender -> ownedBy(sender) && other.ownedBy(sender);
     }
     
     default Permission or(Permission other) {
+        if (this == NONE) return NONE;
+        if (other == NONE) return NONE;
         return sender -> ownedBy(sender) || other.ownedBy(sender);
     }
     

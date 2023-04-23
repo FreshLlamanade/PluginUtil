@@ -19,6 +19,11 @@ public interface CommandDelegator extends Command {
     Map<String, Command> getSubCommands();
     
     @Override
+    default Permission getPermission() {
+        return getSubCommands().values().stream().map(Command::getPermission).reduce(Permission::or).orElse(Permission.NONE);
+    }
+    
+    @Override
     default void execute(CommandSender sender, Arguments args) throws CommandExecutionException {
         Command subCommand = args.first()
                 .map(input -> getSubCommands().get(input))

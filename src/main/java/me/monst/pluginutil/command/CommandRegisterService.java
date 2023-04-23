@@ -67,11 +67,9 @@ public class CommandRegisterService {
     
     private CommandExecutor toCommandExecutor(Command command) {
         return (sender, cmd, label, args) -> {
-            if (command.getPermission().notOwnedBy(sender)) {
-                sender.sendMessage(ChatColor.DARK_RED + command.getNoPermissionMessage());
-                return true;
-            }
             try {
+                if (command.getPermission().notOwnedBy(sender))
+                    throw new NoPermissionException(command.getNoPermissionMessage());
                 command.execute(sender, new ArgumentsImpl(args));
             } catch (NoPermissionException e) {
                 sender.sendMessage(ChatColor.DARK_RED + e.getMessage());
