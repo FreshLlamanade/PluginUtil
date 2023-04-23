@@ -19,6 +19,13 @@ public interface CommandDelegator extends Command {
     Map<String, Command> getSubCommands();
     
     @Override
+    default String getUsage() {
+        return "/" + getName() + " " + getSubCommands().values().stream()
+                .map(Command::getName)
+                .collect(Collectors.joining(" | ", "<", ">"));
+    }
+    
+    @Override
     default Permission getPermission() {
         return getSubCommands().values().stream().map(Command::getPermission).reduce(Permission::or).orElse(Permission.NONE);
     }
