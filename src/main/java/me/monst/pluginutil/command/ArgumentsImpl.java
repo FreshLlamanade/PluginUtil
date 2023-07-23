@@ -12,9 +12,44 @@ public class ArgumentsImpl implements Arguments {
     private final int endIndex; // exclusive
     
     public ArgumentsImpl(String[] args) {
-        this.args = args;
+        this.args = combineQuotedArguments(args);
         this.startIndex = 0;
-        this.endIndex = args.length;
+        this.endIndex = this.args.length;
+    }
+    
+    private static String[] combineQuotedArguments(String[] args) {
+        if (args.length == 0)
+            return args;
+        String[] combined = new String[args.length];
+        int combinedIndex = 0;
+        StringBuilder builder = new StringBuilder();
+        boolean inQuotes = false;
+        for (String arg : args) {
+            if (inQuotes) {
+                if (arg.endsWith("\"")) {
+                    builder.append(' ').append(arg, 0, arg.length() - 1);
+                    combined[combinedIndex++] = builder.toString();
+                    builder.setLength(0);
+                    inQuotes = false;
+                } else {
+                    builder.append(' ').append(arg);
+                }
+            } else {
+                if (arg.startsWith("\"")) {
+                    if (arg.length() > 1 && arg.endsWith("\"")) {
+                        combined[combinedIndex++] = arg.substring(1, arg.length() - 1);
+                    } else {
+                        builder.append(arg, 1, arg.length());
+                        inQuotes = true;
+                    }
+                } else {
+                    combined[combinedIndex++] = arg;
+                }
+            }
+        }
+        if (inQuotes)
+            combined[combinedIndex++] = "\"" + builder; // append the opening quote again
+        return Arrays.copyOf(combined, combinedIndex);
     }
     
     private ArgumentsImpl(String[] args, int startIndex, int endIndex) {
