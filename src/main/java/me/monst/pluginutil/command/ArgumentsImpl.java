@@ -78,16 +78,6 @@ public class ArgumentsImpl implements Arguments {
     }
     
     @Override
-    public Arguments from(int fromIndex) {
-        return between(fromIndex, size());
-    }
-    
-    @Override
-    public Arguments to(int toIndex) {
-        return between(0, toIndex);
-    }
-    
-    @Override
     public Arguments between(int fromIndex, int toIndex) {
         if (fromIndex < 0)
             throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);

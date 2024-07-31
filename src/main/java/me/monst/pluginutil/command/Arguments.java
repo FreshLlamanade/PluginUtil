@@ -98,14 +98,18 @@ public interface Arguments extends Iterable<String> {
      * @param fromIndex the index to start at.
      * @return a sub-list of arguments starting at the specified inclusive index.
      */
-    Arguments from(int fromIndex);
+    default Arguments from(int fromIndex) {
+        return between(fromIndex, size());
+    }
     
     /**
      * Returns a sub-list of arguments ending at the specified exclusive index.
      * @param toIndex the index to end at.
      * @return a sub-list of arguments ending at the specified exclusive index.
      */
-    Arguments to(int toIndex);
+    default Arguments to(int toIndex) {
+        return between(0, toIndex);
+    }
     
     /**
      * Returns a sub-list of arguments between the specified inclusive and exclusive indices.
