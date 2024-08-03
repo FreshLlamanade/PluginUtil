@@ -105,26 +105,26 @@ public class Query {
         }
     }
     
-    public ParametrizedQuery with(Object param) {
-        return new ParametrizedQuery(sql).and(param);
+    public ParameterizedQuery with(Object param) {
+        return new ParameterizedQuery(sql).and(param);
     }
     
-    public ParametrizedQuery with(Object... params) {
-        return new ParametrizedQuery(sql).and(params);
+    public ParameterizedQuery with(Object... params) {
+        return new ParameterizedQuery(sql).and(params);
     }
     
-    public ParametrizedQuery with(Iterable<?> params) {
-        return new ParametrizedQuery(sql).and(params);
+    public ParameterizedQuery with(Iterable<?> params) {
+        return new ParameterizedQuery(sql).and(params);
     }
     
-    public ParametrizedQuery in(Collection<?> params) {
+    public ParameterizedQuery in(Collection<?> params) {
         String formattedSQL = String.format(sql, params.stream().map(o -> "?").collect(Collectors.joining(",")));
-        return new ParametrizedQuery(formattedSQL).and(params);
+        return new ParameterizedQuery(formattedSQL).and(params);
     }
     
-    public <T> ParametrizedQuery in(Collection<T> params, Function<T, Object> valueExtractor) {
+    public <T> ParameterizedQuery in(Collection<T> params, Function<T, Object> valueExtractor) {
         String formattedSQL = String.format(sql, params.stream().map(o -> "?").collect(Collectors.joining(",")));
-        return new ParametrizedQuery(formattedSQL).and(params.stream().map(valueExtractor).collect(Collectors.toList()));
+        return new ParameterizedQuery(formattedSQL).and(params.stream().map(valueExtractor).collect(Collectors.toList()));
     }
     
     public <T> BatchBuilder<T> batch(Collection<T> elements) {

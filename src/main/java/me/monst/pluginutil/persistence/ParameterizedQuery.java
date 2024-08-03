@@ -8,25 +8,25 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ParametrizedQuery extends Query {
+public class ParameterizedQuery extends Query {
     
     private final List<Object> parameters = new LinkedList<>();
     
-    ParametrizedQuery(String sql) {
+    ParameterizedQuery(String sql) {
         super(sql);
     }
     
-    public ParametrizedQuery and(Object param) {
+    public ParameterizedQuery and(Object param) {
         parameters.add(param);
         return this;
     }
     
-    public ParametrizedQuery and(Object... params) {
+    public ParameterizedQuery and(Object... params) {
         parameters.addAll(Arrays.asList(params));
         return this;
     }
     
-    public ParametrizedQuery and(Iterable<?> params) {
+    public ParameterizedQuery and(Iterable<?> params) {
         params.forEach(parameters::add);
         return this;
     }
