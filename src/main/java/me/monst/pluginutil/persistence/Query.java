@@ -51,6 +51,22 @@ public class Query {
         }
     }
     
+    public <T> Optional<T> asOptional(Connection con, Reconstructor<T> reconstructor) throws SQLException {
+        try (ResultSet resultSet = executeQuery(con)) {
+            if (!resultSet.next())
+                return Optional.empty();
+            return Optional.ofNullable(reconstructor.reconstruct(resultSet, con));
+        }
+    }
+    
+    public <T> Optional<T> asOptional(Connection con, Class<T> clazz) throws SQLException {
+        try (ResultSet resultSet = executeQuery(con)) {
+            if (!resultSet.next())
+                return Optional.empty();
+            return Optional.ofNullable(resultSet.getObject(1, clazz));
+        }
+    }
+    
     public <T> List<T> asList(Connection con, Reconstructor<T> reconstructor) throws SQLException {
         try (ResultSet resultSet = executeQuery(con)) {
             List<T> list = new ArrayList<>();
